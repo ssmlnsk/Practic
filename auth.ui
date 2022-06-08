@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>256</width>
-    <height>187</height>
+    <width>450</width>
+    <height>350</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,8 +18,8 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>350</width>
-    <height>280</height>
+    <width>450</width>
+    <height>350</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,14 +27,81 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,1,1,1,0,4">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0,1,1,0,0,10,1">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2,0">
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Comic Sans MS</family>
+           <pointsize>13</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Горнолыжный курорт «Игора»    </string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="logo">
+         <property name="maximumSize">
+          <size>
+           <width>80</width>
+           <height>80</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>img/logo_mini.png</pixmap>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item>
       <widget class="QLabel" name="label">
        <property name="font">
         <font>
-         <family>Ebrima</family>
-         <pointsize>10</pointsize>
+         <family>Comic Sans MS</family>
+         <pointsize>11</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font: 11pt &quot;Comic Sans MS&quot;;</string>
        </property>
        <property name="text">
         <string>Авторизация</string>
@@ -55,13 +122,17 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(118, 227, 131);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+         </property>
          <property name="text">
           <string> Логин:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="login"/>
+        <widget class="QLineEdit" name="edit_login"/>
        </item>
       </layout>
      </item>
@@ -69,70 +140,86 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(118, 227, 131);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+         </property>
          <property name="text">
           <string> Пароль:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="password">
+        <widget class="QLineEdit" name="edit_password">
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_hide_password">
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(73, 140, 81);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/eye.png</normaloff>img/eye.png</iconset>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="btn_enter">
-       <property name="text">
-        <string>Войти</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(118, 227, 131);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+         </property>
+         <property name="text">
+          <string>Введите капчу:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="edit_captcha"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_new_captcha">
+         <property name="maximumSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(73, 140, 81);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>img/new.png</normaloff>img/new.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
-       <property name="palette">
-        <palette>
-         <active>
-          <colorrole role="WindowText">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </colorrole>
-         </active>
-         <inactive>
-          <colorrole role="WindowText">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </colorrole>
-         </inactive>
-         <disabled>
-          <colorrole role="WindowText">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>120</red>
-             <green>120</green>
-             <blue>120</blue>
-            </color>
-           </brush>
-          </colorrole>
-         </disabled>
-        </palette>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
+      <widget class="QGraphicsView" name="draw_captcha"/>
      </item>
      <item>
       <spacer name="verticalSpacer">
@@ -146,6 +233,17 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_enter">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(73, 140, 81);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Войти</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -1,6 +1,5 @@
 import mysql
 from mysql.connector import connect, Error
-from configparser import ConfigParser
 
 
 class Database:
@@ -16,7 +15,7 @@ class Database:
             self.conn.close()
             cursor.close()
 
-    def select(self):
+    def select_clients(self):
         try:
             self.conn = mysql.connector.connect(host='localhost', database='igora', user='root', password='iejahjoU1')
             cursor = self.conn.cursor()
@@ -24,8 +23,7 @@ class Database:
             rows = cursor.fetchall()
 
             print('Total Row(s):', cursor.rowcount)
-            for row in rows:
-                print(row)
+            return rows
 
         except Error as e:
             print(e)
@@ -34,7 +32,41 @@ class Database:
             self.conn.close()
             cursor.close()
 
+    def select_employees(self):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', database='igora', user='root', password='iejahjoU1')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT * FROM employees")
+            rows = cursor.fetchall()
 
-if __name__ == '__main__':
-    db = Database()
-    db.select()
+            print('Total Row(s):', cursor.rowcount)
+            return rows
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def get_log(self, login):
+        log = []
+        try:
+            self.conn = mysql.connector.connect(host='localhost', database='igora', user='root', password='iejahjoU1')
+            cursor = self.conn.cursor()
+            cursor.execute(f"""SELECT Пароль, Должность, `Последний вход` FROM employees WHERE Логин = '{login}'""")
+            rows = cursor.fetchall()
+
+            print('Total Row(s):', cursor.rowcount)
+            for i in rows:
+                for j in i:
+                    log.append(j)
+            return log
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
