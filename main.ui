@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>678</width>
-    <height>658</height>
+    <width>815</width>
+    <height>723</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -35,7 +35,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,2,2,1">
       <property name="leftMargin">
        <number>12</number>
       </property>
@@ -115,21 +115,18 @@
          <string notr="true">font: &quot;Comic Sans MS&quot;;</string>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>5</number>
         </property>
         <widget class="QWidget" name="page_1_for_all">
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,1,1,10">
+           <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,1,1,10">
             <property name="spacing">
              <number>2</number>
             </property>
             <property name="sizeConstraint">
              <enum>QLayout::SetMaximumSize</enum>
             </property>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_8"/>
-            </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
@@ -1145,7 +1142,7 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,2,1,1,1,5">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,2,1,1,1,4">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -1270,7 +1267,7 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>678</width>
+     <width>815</width>
      <height>21</height>
     </rect>
    </property>
