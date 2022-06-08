@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS Clients (
-number_client INT PRIMARY KEY NOT NULL,
 name VARCHAR(255) NOT NULL,
+number_client INT PRIMARY KEY auto_increment,
 passport VARCHAR(255) NOT NULL,
 datebirth DATE NOT NULL,
 address VARCHAR(255) NOT NULL,
