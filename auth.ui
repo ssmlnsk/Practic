@@ -27,7 +27,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0,1,1,0,0,1">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0,1,1,0,0,10,1">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2,0">
        <property name="leftMargin">
@@ -193,10 +193,10 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="edit_capcha"/>
+        <widget class="QLineEdit" name="edit_captcha"/>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_new_capcha">
+        <widget class="QPushButton" name="btn_new_captcha">
          <property name="maximumSize">
           <size>
            <width>25</width>
@@ -219,7 +219,20 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
       </layout>
      </item>
      <item>
-      <widget class="QGraphicsView" name="draw_chapcha"/>
+      <widget class="QGraphicsView" name="draw_captcha"/>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="btn_enter">
