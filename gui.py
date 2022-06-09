@@ -1,5 +1,7 @@
+from database import Database
 from facade import Facade
 import random
+
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import uic
@@ -20,43 +22,19 @@ logging.basicConfig(level=logging.INFO)
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.facade = Facade()
         self.ui = uic.loadUi("main.ui", self)
-        self.page = self.ui.stackedWidget_main
-        self.page_id = [0]  # тут будут индексы доступных страничек после авторизации для сотрудника
-        self.now_page = 0
-        self.page.setCurrentIndex(self.page_id[self.now_page])
-        self.ui.btn_next.clicked.connect(self.next_page)
-        self.ui.btn_back.clicked.connect(self.back_page)
-        self.ui.btn_exit.clicked.connect(lambda: self.exit(False))
 
-    def exit(self, block):
-        self.now_page = 0
-        self.page.setCurrentIndex(self.page_id[self.now_page])
-        t = time.localtime()
-        time_string = time.strftime("%d:%m:%Y %H:%M:%S", t)     # время выхода
-        self.facade.insert_time_exit(self.now_login, time_string, block)
-        self.hide()
-        self.open_auth()
-
-    def next_page(self):
-        if self.now_page != len(self.page_id)-1:
-            self.now_page += 1
-            self.page.setCurrentIndex(self.page_id[self.now_page])
-
-    def back_page(self):
-        if self.now_page != 0:
-            self.now_page -= 1
-            self.page.setCurrentIndex(self.page_id[self.now_page])
-
-    def open_auth(self):
-        dialog = DialogAuth(self)
+    def open_auth(self, w):
+        dialog = DialogAuth(self, w)
         dialog.setWindowTitle("Авторизация")
         dialog.show()
         dialog.exec_()
 
+
 class DialogAuth(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, w, parent=None):
+        self.w = w
+        self.facade = Facade()
         super(DialogAuth, self).__init__(parent)
         self.ui = uic.loadUi("auth.ui", self)
 
@@ -77,6 +55,7 @@ class DialogAuth(QDialog):
         if self.vis_p:
             self.vis_p = False
             ed.setEchoMode(QtWidgets.QLineEdit.Password)
+
         else:
             self.vis_p = True
             ed.setEchoMode(QtWidgets.QLineEdit.Normal)
@@ -126,7 +105,9 @@ class DialogAuth(QDialog):
             logging.log(logging.INFO, 'Ошибка. Введите капчу!')
             self.mes_box('Введите капчу!')
         else:
-            password, role, last_exit, block = self.parent().facade.get_for_authorization(auth_log)
+            info = self.facade.get_log(auth_log)
+            """ вернуть из бд пароль, роль, последний выход и блокировку (true, false) по логину, если такого логина нет, тогда вернуть '', '', '', '' (4 пустых строки) """
+            password, role, last_exit, block = info[0], info[1], info[2], True   # временные данные (сюда надо возвращать из бд)
             if last_exit is not None and block:     # после окончания предыдущей сессии, новую можно начать только через 3 минуты
                 last_exit = last_exit.split()
                 day, mon, year = map(int, last_exit[0].split(':'))
@@ -142,7 +123,6 @@ class DialogAuth(QDialog):
                 self.mes_box('Подождите, прежде чем пытаться вводить снова.')
                 return
 
-
             if self.now_captcha is not None and self.now_captcha != self.ui.edit_captcha.text():
                 logging.log(logging.INFO, 'Ошибка. Неправильно введена капча.')
                 self.mes_box('Неправильно введена капча.')
@@ -150,10 +130,11 @@ class DialogAuth(QDialog):
                 self.count_try_entry += 1
                 if self.count_try_entry >= 3:
                     self.next_try = now_time+10
-                if password != '':  # если нет пароля, значит нет пользователя с введенным логином, поэтому записывать в историю входа не надо
-                    time_entry = time.strftime("%d:%m:%Y %H:%M:%S", t)    # время неуспешной попытки входа
-                    self.parent().facade.insert_time_entry(auth_log, time_entry, False)
-
+                time_error_entry = time.strftime("%d:%m:%Y %H:%M:%S", t)    # время неуспешной попытки входа
+                # print(time_error_entry)
+                """
+                time_error_entry Для Паши в историю входа (неуспешный вход)
+                """
                 if self.count_try_entry == 2:
                     self.visible_captcha(True)
                     self.captcha_generation()
@@ -163,32 +144,31 @@ class DialogAuth(QDialog):
                     logging.log(logging.INFO, 'Ошибка. Неправильно введены данные.')
                     self.mes_box('Неправильно введены данные.')
             elif password == auth_pas:
-                time_entry = time.strftime("%d:%m:%Y %H:%M:%S", t)    # время успешной попытки входа
-                self.parent().facade.insert_time_entry(auth_log, time_entry, True)
+                time_success_entry = time.strftime("%d:%m:%Y %H:%M:%S", t)    # время успешной попытки входа
+                """
+                time_success_entry Для Паши в историю входа (успешный вход) и для последнего входа сотрудника (в employeers)
+                """
                 logging.log(logging.INFO, 'Вход выполнен')
-                if role == 'Старший смены' or role == 'Продавец':
-                    self.parent().hide()
-                    self.parent().page_id = [0, 2]
-                    """Передать индексы страничек"""
-                else:   # администратор
-                    self.parent().hide()
-                    self.parent().page_id = [0, 1, 3, 5]
-                self.parent().now_login = auth_log
-                self.parent().show()
+                if role == 'Старший смены':
+                    self.w.hide()
+                elif role == 'Продавец':
+                    self.w.hide()
+                else:
+                    self.w.hide()
+                self.w.show()
                 self.close()
+
 
 class Builder:
     def __init__(self):
         self.qapp = QApplication(sys.argv)
         self.window = MainWindow()
         self.auth()
-        self.qapp.exec()
 
     def auth(self):
-        self.window.open_auth()
-
+        self.window.open_auth(self.window)
+        self.qapp.exec()
 
 
 if __name__ == '__main__':
-
     B = Builder()
