@@ -8,5 +8,6 @@ services VARCHAR(255) NOT NULL,
 status_request VARCHAR(255) NOT NULL,
 date_close VARCHAR(255) NOT NULL,
 rental_time VARCHAR(255) NOT NULL,
-FOREIGN KEY (number_client) REFERENCES Clients (number_client)
+FOREIGN KEY (number_client) REFERENCES Clients (number_client),
+FOREIGN KEY (services) REFERENCES Services (id_service)
 ); 
