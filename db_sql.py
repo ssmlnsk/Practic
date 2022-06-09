@@ -47,6 +47,29 @@ class Database:
         cursor.close()
         self.connection.commit()
 
+    def insertEmployeers(self, id_employeer, post, name, login, password, lastLogIn, StatusLogIn):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            f"INSERT INTO employeers"
+            f"(`id_employeer`, `post`, `name`, `login`, `password`, `lastLogIn`, `StatusLogIn`) "
+            f"VALUES ('{id_employeer}', '{post}', '{name}', '{login}', '{password}', '{lastLogIn}', '{StatusLogIn}' )")
+        cursor.close()
+        self.connection.commit()
+
+    def insertServices(self, id_service, name_service, code_service, price_for_hour):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            f"INSERT INTO services"
+            f"(`id_service`, `name_service`, `code_service`, `price_for_hour`)"
+            f"VALUES ('{id_service}', '{name_service}', '{code_service}', '{price_for_hour}')" )
+        cursor.close()
+        self.connection.commit()
+
+    def insertRequests(self):
+        pass
+
+
+
 
 
 
@@ -72,4 +95,7 @@ if __name__ == '__main__':
     #print("___________________________________________________________________________________________________________")
     #D.getServices()
     #D.insertСlients("Минаков Павел Сергеевич", 45462599, "Серия 7312 Номер 699088", "2003-09-05", "141410, г.Химки, ул. Маяковского, д.24, кв.23", "promtman1990@gmail.com", "abobasus")
-    D.getCLients()
+    #D.getCLients()
+    #D.insertEmployeers("ID 111", "Продавец", "Алексеев Иван Сергеевич", "example@yahoo.com", "qazwsxedc", "09.06.2022 14:00", "Успешно")
+    #D.getEmployeers()
+    D.insertServices("")
