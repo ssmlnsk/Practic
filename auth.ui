@@ -151,6 +151,9 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
        </item>
        <item>
         <widget class="QLineEdit" name="edit_password">
+         <property name="inputMethodHints">
+          <set>Qt::ImhHiddenText|Qt::ImhNoAutoUppercase|Qt::ImhNoPredictiveText|Qt::ImhSensitiveData</set>
+         </property>
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
          </property>
@@ -163,6 +166,9 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
            <width>25</width>
            <height>25</height>
           </size>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(73, 140, 81);
@@ -203,6 +209,9 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
            <height>25</height>
           </size>
          </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(73, 140, 81);
 font: 9pt &quot;Comic Sans MS&quot;;</string>
@@ -236,6 +245,9 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
      </item>
      <item>
       <widget class="QPushButton" name="btn_enter">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(73, 140, 81);
 font: 9pt &quot;Comic Sans MS&quot;;</string>
