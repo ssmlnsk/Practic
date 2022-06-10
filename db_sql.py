@@ -16,6 +16,7 @@ class Database:
         clients = cursor.fetchall()
         for i in clients:
             print(i)
+        return clients
 
     def getRequests(self):
         cursor = self.connection.cursor()
@@ -23,6 +24,7 @@ class Database:
         requests = cursor.fetchall()
         for i in requests:
             print(i)
+        return requests
 
     def getEmployeers(self):
         cursor = self.connection.cursor()
@@ -30,6 +32,7 @@ class Database:
         employeers = cursor.fetchall()
         for i in employeers:
             print(i)
+        return employeers
 
     def getServices(self):
         cursor = self.connection.cursor()
@@ -37,6 +40,15 @@ class Database:
         services = cursor.fetchall()
         for i in services:
             print(i)
+        return services
+
+    def getHistory(self):
+        cursor = self.connection.cursor()
+        cursor.exectue("SELECT * FROM EntryHistory")
+        history = cursor.fetchall()
+        for i in history:
+            print(i)
+        return history
 
     def insertСlients(self, name, number_client, passport, datebirth, address, email, password):
         cursor = self.connection.cursor()
@@ -65,17 +77,40 @@ class Database:
         cursor.close()
         self.connection.commit()
 
-    def insertRequests(self):
-        pass
+    def insertRequests(self, id_request, number_request, date_create, time_request, number_client, services, status_request, rental_time):
+        cursor = self.connection.cursor()
+        cursor.execute(
+            f"INSERT INTO requests"
+            f"(`id_request`, `number_request`, `date_create`, `time_request`, `number_client`, `services`, `status_request`, `rental_time`)"
+            f"VALUES ('{id_request}', '{number_request}', '{date_create}', '{time_request}', '{number_client}', '{services}', '{status_request}', '{rental_time}')"
+        )
+        cursor.close()
+        self.connection.commit()
 
 
+    def DeleteClients(self):
+        cursor = self.connection.cursor()
+        cursor.execute("DROP TABLE clients")
+        cursor.close()
+        self.connection.commit()
 
+    def DeleteRequests(self):
+        cursor = self.connection.cursor()
+        cursor.execute("DROP TABLE requests")
+        cursor.close()
+        self.connection.commit()
 
+    def DeleteServices(self):
+        cursor = self.connection.cursor()
+        cursor.execute("DROP TABLE services")
+        cursor.close()
+        self.connection.commit()
 
-
-
-
-
+    def DeleteEmployeers(self):
+        cursor = self.connection.cursor()
+        cursor.execute("DROP TABLE employeers")
+        cursor.close()
+        self.connection.commit()
 
 if __name__ == '__main__':
     D = Database()
