@@ -34,35 +34,13 @@ class MainWindow(QMainWindow):
 
         self.toTableServ()
 
-        self.counter = 0
-        self.minute = '00'
-        self.second = '00'
-        self.count = '00'
-        self.startWatch = False
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.showCounter)
-
-    def showCounter(self):
-        self.counter += 1
-
-        cnt = int((self.counter / 10 - int(self.counter / 10)) * 10)
-        self.count = '0' + str(cnt)
-
-        if int(self.counter / 10) < 10:
-            self.second = '0' + str(int(self.counter / 10))
-        else:
-            self.second = str(int(self.counter / 10))
-            if self.counter / 10 == 60.0:
-                self.second == '00'
-                self.counter = 0
-                min = int(self.minute) + 1
-                if min < 10:
-                    self.minute = '0' + str(min)
-                else:
-                    self.minute = str(min)
-
-        text = self.minute + ':' + self.second + ':' + self.count
-        self.ui.lbl_timer.setText(text)
+    def countdown(self, t):
+        while t:
+            mins, secs = divmod(t, 60)
+            timer = '{:02d}:{:02d}'.format(mins, secs)
+            self.ui.lbl_timer.setText(timer)
+            time.sleep(1)
+            t -= 1
 
     def exit(self, block):
         self.now_page = 0
@@ -247,7 +225,7 @@ class DialogAuth(QDialog):
                     self.parent().hide()
                     self.parent().page_id = [0, 1, 4, 5]
                 self.parent().show()
-                self.parent().timer.start(1000)
+                self.parent().countdown(60)
                 self.close()
 
 class Builder:
