@@ -28,6 +28,16 @@ class MainWindow(QMainWindow):
         self.page.setCurrentIndex(self.page_id[self.now_page])
         self.ui.btn_next.clicked.connect(self.next_page)
         self.ui.btn_back.clicked.connect(self.back_page)
+        self.ui.btn_exit.clicked.connect(lambda: self.exit(False))
+
+    def exit(self, block):
+        self.now_page = 0
+        self.page.setCurrentIndex(self.page_id[self.now_page])
+        t = time.localtime()
+        time_string = time.strftime("%d:%m:%Y %H:%M:%S", t)     # время выхода
+        self.facade.insert_time_exit(self.now_login, time_string, block)
+        self.hide()
+        self.open_auth()
 
     def next_page(self):
         if self.now_page != len(self.page_id)-1:
@@ -163,6 +173,7 @@ class DialogAuth(QDialog):
                 else:   # администратор
                     self.parent().hide()
                     self.parent().page_id = [0, 1, 3, 5]
+                self.parent().now_login = auth_log
                 self.parent().show()
                 self.close()
 
@@ -171,11 +182,13 @@ class Builder:
         self.qapp = QApplication(sys.argv)
         self.window = MainWindow()
         self.auth()
+        self.qapp.exec()
 
     def auth(self):
         self.window.open_auth()
-        self.qapp.exec()
+
 
 
 if __name__ == '__main__':
+
     B = Builder()
