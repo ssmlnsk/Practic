@@ -31,7 +31,6 @@ a = [
 ['16:50', 40]
 ]
 
-
 for i in range(len(a)):
     print(a[i][1])
     print(datetime.strptime(a[i][0], '%H:%M'))
