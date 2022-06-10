@@ -36,3 +36,4 @@ for i in range(len(a)):
     print(a[i][1])
     print(datetime.strptime(a[i][0], '%H:%M'))
     print (datetime.strptime(a[i][0], '%H:%M') + timedelta(minutes=a[i][1]))
+    print()
