@@ -11,5 +11,10 @@ class Facade:
         return password, role, last_exit, block
 
     def insert_time_entry(self, login, time, success):
-        """вставить данные time_error_entry, success - успешная или ошибочная попытка входа (true, false) в таблицу истории входа) """
+        """вставить данные time, success - успешная или ошибочная попытка входа (true, false) в таблицу истории входа и заменить в таблице сотрудника (последний вход и успех) по логину) """
         pass
+
+    def insert_time_exit(self, login, time, block):
+        """вставить данные time - время выхода, block - нужен ли блок (true, false) в таблицу истории входа по логину) """
+
+
