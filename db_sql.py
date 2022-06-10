@@ -133,4 +133,4 @@ if __name__ == '__main__':
     #D.getCLients()
     #D.insertEmployeers("ID 111", "Продавец", "Алексеев Иван Сергеевич", "example@yahoo.com", "qazwsxedc", "09.06.2022 14:00", "Успешно")
     #D.getEmployeers()
-    D.insertServices("")
+
