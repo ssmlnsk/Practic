@@ -1,3 +1,5 @@
+from PyQt5.QtGui import QFont
+
 from facade import Facade
 import random
 from PyQt5 import QtWidgets
@@ -48,7 +50,10 @@ class MainWindow(QMainWindow):
         self.ui.btn_save_request.clicked.connect(self.save_request)
         self.ui.btn_plus.clicked.connect(self.add_service_to_request)
 
+        self.ui.btn_new_client.clicked.connect(self.oped_new_client)
+
         self.updateTableServ()
+        self.updateTableHistory()
 
     def Counter(self):
         self.time = self.time.addSecs(-1)
@@ -57,11 +62,11 @@ class MainWindow(QMainWindow):
             self.messagebox = QMessageBox(self)
             self.messagebox.setWindowTitle("Внимание!")
             self.messagebox.setText("До завершения сеанса осталось 2 минуты!")
-            self.messagebox.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+            self.messagebox.setStandardButtons(QMessageBox.Ok)
             self.messagebox.show()
 
         if self.time == QTime(0, 0, 0):
-            self.window().exit()
+            self.window().exit(False)
             self.timer.stop()
 
     def exit(self, block):
@@ -105,6 +110,21 @@ class MainWindow(QMainWindow):
                 if x == 0:  # для id делаем некликабельные ячейки
                     item.setFlags(Qt.ItemIsEnabled)
                 self.ui.table_serv.setItem(i, x, item)
+
+    def updateTableHistory(self):
+        self.table_entry.clear()
+        rec = self.facade.read_history()
+        self.ui.table_entry.setColumnCount(5)  # кол-во столбцов
+        self.ui.table_entry.setRowCount(len(rec))  # кол-во строк
+        self.ui.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])  # название колонок таблицы
+
+        for i, employee in enumerate(rec):
+            for x, info in enumerate(employee):  # i, x - координаты ячейки, в которую будем записывать текст
+                item = QTableWidgetItem()
+                item.setText(str(info))  # записываем текст в ячейку
+                if x == 0:  # для id делаем некликабельные ячейки
+                    item.setFlags(Qt.ItemIsEnabled)
+                self.ui.table_entry.setItem(i, x, item)
 
     def new_service(self):
         title_serv = self.ui.edit_title_serv.text()
@@ -250,6 +270,12 @@ class MainWindow(QMainWindow):
         dialog.show()
         dialog.exec_()
 
+    def oped_new_client(self):
+        dialog_client = DialogNewClient(self)
+        dialog_client.setWindowTitle("Добавление нового клиента")
+        dialog_client.show()
+        dialog_client.exec_()
+
 
 class DialogAuth(QDialog):
     def __init__(self, parent=None):
@@ -288,14 +314,16 @@ class DialogAuth(QDialog):
         self.scene.clear()
         syms = 'qwertyuiopasdfghjklzxcvbnm1234567890'
         count_syms = 3
-
         now_syms = ['']*count_syms
         x, y = 30, 20
+
         self.scene.addLine(0, random.randint(20, 45), 200, random.randint(30, 60))
+
         for i in range(count_syms):
             now_syms[i] = syms[random.randint(0, 35)]
             x+=20
             text = self.scene.addText(f"{now_syms[i]}")
+            text.setFont(QFont("MS Shell Dlg 2", 15))
             text.moveBy(x, y+random.randint(-10, 20))
         self.now_captcha = ''.join(now_syms)
 
@@ -303,7 +331,7 @@ class DialogAuth(QDialog):
         self.messagebox = QMessageBox(self)
         self.messagebox.setWindowTitle("Ошибка")
         self.messagebox.setText(text)
-        self.messagebox.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+        self.messagebox.setStandardButtons(QMessageBox.Ok)
         self.messagebox.show()
 
     def enter(self):
@@ -379,6 +407,34 @@ class DialogAuth(QDialog):
                 self.parent().timer.start(1000)
                 self.parent().now_login = auth_log
                 self.close()
+
+
+class DialogNewClient(QDialog):
+    def __init__(self, parent=None):
+        super(DialogNewClient, self).__init__(parent)
+        self.ui = uic.loadUi("new_client.ui", self)
+        self.facade = Facade()
+
+        self.ui.btn_add_client.clicked.connect(self.add)
+
+    def add(self):
+        self.email = self.ui.edit_email.text()
+        self.fio = self.ui.edit_fio.text()
+        self.address = self.ui.edit_address.text()
+        self.dateOfBirth = self.ui.date_birth.dateTime().toString('dd.MM.yyyy')
+        self.passportData = self.ui.edit_passport.text()
+
+        if self.fio != '' and self.passportData != '' and self.dateOfBirth != '' and self.address != '' and self.email != '':
+            self.facade.insert_client(self.fio, self.passportData, self.dateOfBirth, self.address, self.email)
+        else:
+            self.mes_box('Заполните все поля!')
+
+    def mes_box(self, text):
+        self.messagebox = QMessageBox(self)
+        self.messagebox.setWindowTitle("Ошибка")
+        self.messagebox.setText(text)
+        self.messagebox.setStandardButtons(QMessageBox.Ok)
+        self.messagebox.show()
 
 
 class Builder:

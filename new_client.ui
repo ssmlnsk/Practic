@@ -106,24 +106,6 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_18" stretch="0,0">
-         <item>
-          <widget class="QLabel" name="label_15">
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(118, 227, 131);
-font: 9pt &quot;Comic Sans MS&quot;;</string>
-           </property>
-           <property name="text">
-            <string>Введите код клиента:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="spin_code"/>
-         </item>
-        </layout>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
           <widget class="QLabel" name="label_5">
@@ -213,24 +195,6 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
          </item>
          <item>
           <widget class="QLineEdit" name="edit_passport"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <widget class="QLabel" name="label_6">
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(118, 227, 131);
-font: 9pt &quot;Comic Sans MS&quot;;</string>
-           </property>
-           <property name="text">
-            <string>Введите телефон:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="edit_phone"/>
          </item>
         </layout>
        </item>

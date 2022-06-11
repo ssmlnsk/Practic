@@ -177,6 +177,20 @@ class Database:
             self.conn.close()
             cursor.close()
 
+    def insert_client(self, fio, passportData, dateOfBirth, address, email):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute("INSERT INTO clients VALUES (%s, NULL, %s, %s, %s, %s, NULL)", (fio, passportData, dateOfBirth, address, email))
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
     def get_services(self):
         services = []
         try:
@@ -219,6 +233,55 @@ class Database:
             cursor.execute(f"SELECT `Код клиента` FROM clients WHERE ФИО='{fio}'")
             rows = str(cursor.fetchone())
             return rows[1:-2]
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def insert_time_entry(self, login, time, success):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"INSERT INTO history VALUES (NULL, %s, NULL, %s, %s)", (time, success, login))
+            self.conn.commit()
+            cursor.execute(
+                f"UPDATE employees set `Последний вход`='{time}', `Тип входа`='{success}' WHERE `Логин`='{login}'")
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def insert_time_exit(self, login, time, block):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"INSERT INTO history VALUES (NULL, NULL, %s, %s, %s)", (time, block, login))
+            self.conn.commit()
+            cursor.execute(f"UPDATE employees set `Последний вход`='{time}', `Тип входа`='{block}' WHERE `Логин`='{login}'")
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def select_history(self):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT * FROM history")
+            rows = cursor.fetchall()
+
+            return rows
 
         except Error as e:
             print(e)
