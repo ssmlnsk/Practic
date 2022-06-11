@@ -3,7 +3,7 @@ import random
 from PyQt5 import QtWidgets
 from PyQt5 import uic, QtCore
 from PyQt5.QtCore import Qt, QTimer, QTime, QDateTime
-from PyQt5.QtWidgets import QGraphicsScene
+from PyQt5.QtWidgets import QGraphicsScene, QListWidgetItem
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog
 
 import sys
@@ -26,21 +26,43 @@ class MainWindow(QMainWindow):
         self.page_id = [0]  # тут будут индексы доступных страничек после авторизации для сотрудника
         self.now_page = 0
 
+        self.time = QtCore.QTime(0, 10, 0)
+
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.Counter)
+
         self.page.setCurrentIndex(self.page_id[self.now_page])
         self.ui.btn_next.clicked.connect(self.next_page)
         self.ui.btn_back.clicked.connect(self.back_page)
         self.ui.btn_all_clients.clicked.connect(self.page_all_clients)
         self.ui.btn_exit.clicked.connect(lambda: self.exit(False))
 
-        self.toTableServ()
+        self.ui.btn_new_serv.clicked.connect(self.new_service)
+        self.ui.btn_delete_serv.clicked.connect(self.delete_service)
+        self.ui.btn_save_serv.clicked.connect(self.save_service)
 
-    def countdown(self, t):
-        while t:
-            mins, secs = divmod(t, 60)
-            timer = '{:02d}:{:02d}'.format(mins, secs)
-            self.ui.lbl_timer.setText(timer)
-            time.sleep(1)
-            t -= 1
+        self.build_combobox_clients()
+        self.build_combobox_services()
+
+        self.ui.btn_new_order.clicked.connect(self.add_new_request)
+        self.ui.btn_save_request.clicked.connect(self.save_request)
+        self.ui.btn_plus.clicked.connect(self.add_service_to_request)
+
+        self.updateTableServ()
+
+    def Counter(self):
+        self.time = self.time.addSecs(-1)
+        self.lcdTimer.display(self.time.toString("hh:mm:ss"))
+        if self.time == QTime(0, 2, 0):
+            self.messagebox = QMessageBox(self)
+            self.messagebox.setWindowTitle("Внимание!")
+            self.messagebox.setText("До завершения сеанса осталось 2 минуты!")
+            self.messagebox.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+            self.messagebox.show()
+
+        if self.time == QTime(0, 0, 0):
+            self.window().exit()
+            self.timer.stop()
 
     def exit(self, block):
         self.now_page = 0
@@ -69,7 +91,8 @@ class MainWindow(QMainWindow):
                     item.setFlags(Qt.ItemIsEnabled)
                 self.ui.table_clients.setItem(i, x, item)
 
-    def toTableServ(self):
+    def updateTableServ(self):
+        self.table_serv.clear()
         rec = self.facade.read_services()
         self.ui.table_serv.setColumnCount(4)  # кол-во столбцов
         self.ui.table_serv.setRowCount(len(rec))  # кол-во строк
@@ -82,6 +105,134 @@ class MainWindow(QMainWindow):
                 if x == 0:  # для id делаем некликабельные ячейки
                     item.setFlags(Qt.ItemIsEnabled)
                 self.ui.table_serv.setItem(i, x, item)
+
+    def new_service(self):
+        title_serv = self.ui.edit_title_serv.text()
+        code_serv = self.ui.edit_code_serv.text()
+        cost_serv = self.ui.spin_cost.value()
+        if title_serv != '' and code_serv != '' and cost_serv != '':
+            self.facade.insert_service(title_serv, code_serv, cost_serv)
+            self.updateTableServ()
+
+    def delete_service(self):
+        SelectedRow = self.table_serv.currentRow()
+        rowcount = self.table_serv.rowCount()
+        colcount = self.table_serv.columnCount()
+
+        if rowcount == 0:
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("В таблице нет данных!")
+            msg.setWindowTitle("Ошибка")
+            msg.setStandardButtons(QMessageBox.Ok)
+            retval = msg.exec_()
+
+        elif SelectedRow == -1:
+            msg = QMessageBox(self)
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("Выберите поле для удаления!")
+            msg.setWindowTitle("Ошибка")
+            msg.setStandardButtons(QMessageBox.Ok)
+            retval = msg.exec_()
+
+        else:
+            for col in range(1, colcount):
+                self.table_serv.setItem(SelectedRow, col, QTableWidgetItem(''))
+            ix = self.table_serv.model().index(-1, -1)
+            self.table_serv.setCurrentIndex(ix)
+
+    def get_from_table(self):  # получаем данные из таблицы, чтобы потом записать их в БД
+        rows = self.table_serv.rowCount()  # получаем кол-во строк таблицы
+        cols = self.table_serv.columnCount()  # получаем кол-во столбцов таблицы
+        data = []
+        for row in range(rows):
+            tmp = []
+            for col in range(cols):
+                tmp.append(self.table_serv.item(row, col).text())
+            data.append(tmp)
+        return data
+
+    def save_service(self):
+        data = self.get_from_table()
+        for string in data:
+            if string[1] != '':  # если название услуги есть, то обновляем данные
+                self.facade.update_service(int(string[0]), string[1], string[2], string[3])
+            else:  # если названия услуги нет, то удаляем эту строку
+                self.facade.delete_service(int(string[0]))
+        self.updateTableServ()
+
+    def build_combobox_clients(self):
+        clients = self.facade.get_clients()
+        self.comboBox_clients.clear()
+        if self.comboBox_clients is not None:
+            self.comboBox_clients.addItems(clients)
+        logging.log(logging.INFO, 'ComboBox "Клиенты" обновлён')
+
+    def build_combobox_services(self):
+        services = self.facade.get_services()
+        self.comboBox_serv.clear()
+        if self.comboBox_serv is not None:
+            self.comboBox_serv.addItems(services)
+        logging.log(logging.INFO, 'ComboBox "Услуги" обновлён')
+
+    def add_new_request(self):
+        self.number = QListWidgetItem(str(self.spin_num_order.value()))
+        self.number_title = QListWidgetItem("Номер заказа:")
+        self.client = QListWidgetItem(self.comboBox_clients.currentText())
+        self.client_title = QListWidgetItem("Клиент:")
+        self.service = QListWidgetItem(self.comboBox_serv.currentText())
+        self.service_title = QListWidgetItem("Услуга:")
+        self.datetime = datetime.datetime.now()
+        self.date_title = QListWidgetItem("Дата создания:")
+        self.date = str(self.datetime.strftime("%d.%m.%Y"))
+        self.time_title = QListWidgetItem("Время заказа:")
+        self.time = str(self.datetime.strftime("%H:%M"))
+        self.add_new_field.clear()
+        if self.number != '' and self.client != '' and self.service != '':
+            self.add_new_field.addItem(self.number_title)
+            self.add_new_field.addItem(self.number)
+            self.add_new_field.addItem(self.date_title)
+            self.add_new_field.addItem(self.date)
+            self.add_new_field.addItem(self.time_title)
+            self.add_new_field.addItem(self.time)
+            self.add_new_field.addItem(self.client_title)
+            self.add_new_field.addItem(self.client)
+            self.add_new_field.addItem(self.service_title)
+            self.add_new_field.addItem(self.service)
+
+    def add_service_to_request(self):
+        self.service = QListWidgetItem(self.comboBox_serv.currentText())
+        self.add_new_field.addItem(self.service)
+
+    def save_request(self):
+        ignore_serv = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        ignore2 = [1, 3, 5, 7]
+        count = self.add_new_field.count()
+        list_serv = [ind for ind in range(count) if ind not in ignore_serv]
+        list_req = [ind for ind in range(count) if ind in ignore2]
+        request = []
+        serv = []
+        for i in list_serv:
+            name = self.add_new_field.item(i).text()
+            id_serv = self.facade.get_id_serv(name)
+            serv.append(id_serv)
+            list_serv_for_request = str(serv).replace("'", "")
+
+        print(list_serv_for_request)
+
+        for j in list_req:
+            if j == 7:
+                fio = str(self.add_new_field.item(j).text())
+                id_client = self.facade.get_id_client(fio)
+                request.append(id_client)
+            else:
+                request.append(self.add_new_field.item(j).text())
+
+        print(request)
+        number = str(request[0] + "/" + request[1])
+
+        self.facade.create_request(number, request[1], request[2], request[3], list_serv_for_request[1:-1])
+        self.updateTableServ()
 
     def next_page(self):
         if self.now_page != len(self.page_id)-1:
@@ -98,6 +249,7 @@ class MainWindow(QMainWindow):
         dialog.setWindowTitle("Авторизация")
         dialog.show()
         dialog.exec_()
+
 
 class DialogAuth(QDialog):
     def __init__(self, parent=None):
@@ -191,7 +343,6 @@ class DialogAuth(QDialog):
                 self.mes_box('Подождите, прежде чем пытаться вводить снова.')
                 return
 
-
             if self.now_captcha is not None and self.now_captcha != self.ui.edit_captcha.text():
                 logging.log(logging.INFO, 'Ошибка. Неправильно введена капча.')
                 self.mes_box('Неправильно введена капча.')
@@ -225,8 +376,10 @@ class DialogAuth(QDialog):
                     self.parent().hide()
                     self.parent().page_id = [0, 1, 4, 5]
                 self.parent().show()
-                self.parent().countdown(60)
+                self.parent().timer.start(1000)
+                self.parent().now_login = auth_log
                 self.close()
+
 
 class Builder:
     def __init__(self):
