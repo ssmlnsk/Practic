@@ -35,7 +35,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,2,2,1">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,2,3,2,1,1">
       <property name="leftMargin">
        <number>12</number>
       </property>
@@ -50,9 +50,68 @@
          </font>
         </property>
         <property name="text">
-         <string>Оставшееся время: x минут</string>
+         <string>Оставшееся время:</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QLCDNumber" name="lcdTimer">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>64</horstretch>
+          <verstretch>80</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+          <pointsize>8</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 8pt &quot;Comic Sans MS&quot;;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="smallDecimalPoint">
+         <bool>false</bool>
+        </property>
+        <property name="digitCount">
+         <number>5</number>
+        </property>
+        <property name="mode">
+         <enum>QLCDNumber::Dec</enum>
+        </property>
+        <property name="segmentStyle">
+         <enum>QLCDNumber::Flat</enum>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_18">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <widget class="QLabel" name="label">
@@ -77,6 +136,19 @@
        </widget>
       </item>
       <item>
+       <spacer name="horizontalSpacer_19">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_6">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -97,6 +169,11 @@
           <height>80</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <family>Comic Sans MS</family>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -115,7 +192,7 @@
          <string notr="true">font: &quot;Comic Sans MS&quot;;</string>
         </property>
         <property name="currentIndex">
-         <number>4</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page_1_for_all">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -141,6 +218,9 @@
                  <font>
                   <family>Comic Sans MS</family>
                   <pointsize>11</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -185,6 +265,9 @@
                  <font>
                   <family>Comic Sans MS</family>
                   <pointsize>10</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -225,6 +308,9 @@
                  <font>
                   <family>Comic Sans MS</family>
                   <pointsize>10</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -263,6 +349,9 @@
                  <font>
                   <family>Comic Sans MS</family>
                   <pointsize>10</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -297,6 +386,9 @@
                  <font>
                   <family>Comic Sans MS</family>
                   <pointsize>10</pointsize>
+                  <weight>50</weight>
+                  <italic>false</italic>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="styleSheet">
@@ -526,7 +618,11 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spin_num_order"/>
+               <widget class="QSpinBox" name="spin_num_order">
+                <property name="maximum">
+                 <number>99999999</number>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -612,7 +708,7 @@ background-color: rgb(118, 227, 131);</string>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="3,1,2,1,2,1,2,1,3">
+             <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="3,1,0,0,2,1,2,1,2,1,3">
               <item>
                <spacer name="horizontalSpacer_7">
                 <property name="orientation">
@@ -634,6 +730,30 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
                 </property>
                 <property name="text">
                  <string>Создать заказ</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_17">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_save_request">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(73, 140, 81);
+font: 9pt &quot;Comic Sans MS&quot;;</string>
+                </property>
+                <property name="text">
+                 <string>Сохранить заказ</string>
                 </property>
                </widget>
               </item>
@@ -754,6 +874,9 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
           </item>
           <item>
            <widget class="QTableWidget" name="table_clients">
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
             </attribute>
@@ -904,7 +1027,14 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_11">
                 <item>
-                 <widget class="QTableWidget" name="table_graf"/>
+                 <widget class="QTableWidget" name="table_graf">
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContents</enum>
+                  </property>
+                  <attribute name="horizontalHeaderStretchLastSection">
+                   <bool>true</bool>
+                  </attribute>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1037,14 +1167,25 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spin_cost"/>
+               <widget class="QSpinBox" name="spin_cost">
+                <property name="maximum">
+                 <number>100000</number>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="table_serv"/>
+           <widget class="QTableWidget" name="table_serv">
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_21">

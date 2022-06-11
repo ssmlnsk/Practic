@@ -13,7 +13,62 @@ class Database:
             print(e)
         finally:
             cursor.close()
-        # print(self.select_clients())
+
+    def insert_service(self, name, code, cost):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute("INSERT INTO services VALUES (NULL, %s, %s, %s)", (name, code, cost))
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def insert_request(self, number, date, time, client, service):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute("INSERT INTO requests VALUES (NULL, %s, %s, %s, %s, %s, NULL, NULL, NULL)", (number, date, time, client, service))
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def update_service(self, id, name, code, cost):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"UPDATE services set `Наименование услуги`='{name}', `Код услуги`='{code}', `Стоимость  руб.  за час`='{cost}' WHERE ID='{id}'")
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def delete_service(self, id):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"DELETE FROM services WHERE ID='{id}'")
+            self.conn.commit()
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
 
     def select_clients(self):
         try:
@@ -22,7 +77,6 @@ class Database:
             cursor.execute(f"SELECT * FROM clients")
             rows = cursor.fetchall()
 
-            print('Total Row(s):', cursor.rowcount)
             return rows
 
         except Error as e:
@@ -39,7 +93,6 @@ class Database:
             cursor.execute(f"SELECT * FROM employees")
             rows = cursor.fetchall()
 
-            print('Total Row(s):', cursor.rowcount)
             return rows
 
         except Error as e:
@@ -56,7 +109,6 @@ class Database:
             cursor.execute(f"SELECT * FROM services")
             rows = cursor.fetchall()
 
-            print('Total Row(s):', cursor.rowcount)
             return rows
 
         except Error as e:
@@ -74,7 +126,6 @@ class Database:
             cursor.execute(f"""SELECT Пароль, Должность, `Последний вход`, ФИО FROM employees WHERE Логин = '{login}'""")
             rows = cursor.fetchall()
 
-            print('Total Row(s):', cursor.rowcount)
             for i in rows:
                 for j in i:
                     log.append(j)
@@ -90,11 +141,11 @@ class Database:
     def get_logins(self):
         logins = []
         try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
             cursor = self.conn.cursor()
             cursor.execute(f"""SELECT Логин FROM employees""")
             rows = cursor.fetchall()
 
-            print('Total Row(s):', cursor.rowcount)
             for i in rows:
                 for j in i:
                     logins.append(j)
@@ -106,3 +157,82 @@ class Database:
         finally:
             self.conn.close()
             cursor.close()
+
+    def get_clients(self):
+        clients = []
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT ФИО FROM clients")
+            rows = cursor.fetchall()
+
+            for i in rows:
+                clients.append(str(i)[2:-3])
+            return clients
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def get_services(self):
+        services = []
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT `Наименование услуги` FROM services")
+            rows = cursor.fetchall()
+
+            for i in rows:
+                services.append(str(i)[2:-3])
+            return services
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def get_serv_id(self, name):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1',
+                                                database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT ID FROM services WHERE `Наименование услуги`='{name}'")
+            rows = str(cursor.fetchone())
+            return rows[1:-2]
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+    def get_client_id(self, fio):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT `Код клиента` FROM clients WHERE ФИО='{fio}'")
+            rows = str(cursor.fetchone())
+            return rows[1:-2]
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
+
+
+if __name__ == '__main__':
+    db = Database()
+    # db.insert_service("test", "FN5SE4NIU6", 9600)
+    # db.delete_service(355)
+    # db.get_clients()
+    # db.get_serv_id("Прокат шлема")
+    # db.get_client_id("Фролов Андрей Иванович")
+
