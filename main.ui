@@ -192,7 +192,7 @@
          <string notr="true">font: &quot;Comic Sans MS&quot;;</string>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page_1_for_all">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -533,7 +533,7 @@
              <bool>true</bool>
             </property>
             <attribute name="horizontalHeaderVisible">
-             <bool>false</bool>
+             <bool>true</bool>
             </attribute>
             <attribute name="horizontalHeaderCascadingSectionResizes">
              <bool>false</bool>
@@ -550,30 +550,6 @@
             <attribute name="verticalHeaderStretchLastSection">
              <bool>false</bool>
             </attribute>
-            <column>
-             <property name="text">
-              <string>Время и дата входа</string>
-             </property>
-             <property name="textAlignment">
-              <set>AlignCenter</set>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Логин</string>
-             </property>
-             <property name="textAlignment">
-              <set>AlignCenter</set>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Результат входа</string>
-             </property>
-             <property name="textAlignment">
-              <set>AlignCenter</set>
-             </property>
-            </column>
            </widget>
           </item>
          </layout>

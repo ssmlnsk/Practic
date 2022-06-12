@@ -122,9 +122,9 @@ class MainWindow(QMainWindow):
     def updateTableHistory(self):
         self.table_entry.clear()
         rec = self.facade.read_history()
-        self.ui.table_entry.setColumnCount(5)  # кол-во столбцов
-        self.ui.table_entry.setRowCount(len(rec))  # кол-во строк
-        self.ui.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])  # название колонок таблицы
+        self.table_entry.setColumnCount(5)  # кол-во столбцов
+        self.table_entry.setRowCount(len(rec))  # кол-во строк
+        self.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])  # название колонок таблицы
 
         for i, employee in enumerate(rec):
             for x, info in enumerate(employee):  # i, x - координаты ячейки, в которую будем записывать текст
@@ -274,7 +274,7 @@ class MainWindow(QMainWindow):
         name = "code" + temp_end
 
         with open("codes/" + name + '.png', "wb") as f:
-            EAN13(temp_end, writer=ImageWriter()).write(f)
+            EAN13(temp_end, writer=ImageWriter(), add_checksum=False).write(f)
 
         a4_page_size = [img2pdf.in_to_pt(8.3), img2pdf.in_to_pt(11.7)]
         layout_function = img2pdf.get_layout_fun(a4_page_size)
