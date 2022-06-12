@@ -123,7 +123,7 @@ class Database:
         try:
             self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', password='iejahjoU1', database='igora')
             cursor = self.conn.cursor()
-            cursor.execute(f"""SELECT Пароль, Должность, `Последний вход`, `Тип входа`, ФИО FROM employees WHERE Логин = '{login}'""")
+            cursor.execute(f"""SELECT Пароль, Должность, `Последний вход`, `Тип входа`, ФИО, Фото FROM employees WHERE Логин = '{login}'""")
             rows = cursor.fetchall()
 
             for i in rows:

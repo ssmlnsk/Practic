@@ -1,9 +1,9 @@
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 
 from facade import Facade
 import random
 from PyQt5 import QtWidgets
-from PyQt5 import uic, QtCore
+from PyQt5 import uic, QtCore, QtGui
 from PyQt5.QtCore import Qt, QTimer, QTime, QDateTime
 from PyQt5.QtWidgets import QGraphicsScene, QListWidgetItem
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog
@@ -203,18 +203,18 @@ class MainWindow(QMainWindow):
         self.service = QListWidgetItem(self.comboBox_serv.currentText())
         self.service_title = QListWidgetItem("Услуга:")
         self.datetime = datetime.datetime.now()
-        self.date_title = QListWidgetItem("Дата создания:")
-        self.date = str(self.datetime.strftime("%d.%m.%Y"))
-        self.time_title = QListWidgetItem("Время заказа:")
-        self.time = str(self.datetime.strftime("%H:%M"))
+        self.date_req_title = QListWidgetItem("Дата создания:")
+        self.date_req = str(self.datetime.strftime("%d.%m.%Y"))
+        self.time_req_title = QListWidgetItem("Время заказа:")
+        self.time_req = str(self.datetime.strftime("%H:%M"))
         self.add_new_field.clear()
         if self.number != '' and self.client != '' and self.service != '':
             self.add_new_field.addItem(self.number_title)
             self.add_new_field.addItem(self.number)
-            self.add_new_field.addItem(self.date_title)
-            self.add_new_field.addItem(self.date)
-            self.add_new_field.addItem(self.time_title)
-            self.add_new_field.addItem(self.time)
+            self.add_new_field.addItem(self.date_req_title)
+            self.add_new_field.addItem(self.date_req)
+            self.add_new_field.addItem(self.time_req_title)
+            self.add_new_field.addItem(self.time_req)
             self.add_new_field.addItem(self.client_title)
             self.add_new_field.addItem(self.client)
             self.add_new_field.addItem(self.service_title)
@@ -355,7 +355,8 @@ class DialogAuth(QDialog):
             logging.log(logging.INFO, 'Ошибка. Введите капчу!')
             self.mes_box('Введите капчу!')
         else:
-            password, role, last_exit, block, fio = self.parent().facade.get_for_authorization(auth_log)
+            password, role, last_exit, block, fio, photo = self.parent().facade.get_for_authorization(auth_log)
+            pix = QPixmap(f'img/{photo}')
             if last_exit is not None and block:     # после окончания предыдущей сессии, новую можно начать только через 3 минуты
                 last_exit = last_exit.split()
                 day, mon, year = map(int, last_exit[0].split(':'))
@@ -404,6 +405,7 @@ class DialogAuth(QDialog):
                     self.parent().hide()
                     self.parent().page_id = [0, 1, 4, 5]
                 self.parent().show()
+                self.parent().ui.lbl_photo.setPixmap(pix)
                 self.parent().timer.start(1000)
                 self.parent().now_login = auth_log
                 self.close()
