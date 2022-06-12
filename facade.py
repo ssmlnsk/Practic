@@ -23,7 +23,7 @@ class Facade:
     def get_for_authorization(self, login):
         log = self.db.get_info(login)
         """ вернуть из бд пароль, роль сотрудника, дату последнего выхода и блокировку (true, false) по логину, если такого логина нет, тогда вернуть '', '', '', '' (4 пустых строки) """
-        password, role, last_exit, block, fio = log[0], log[1], log[2], True, log[3]  # временные данные
+        password, role, last_exit, block, fio = log[0], log[1], log[2], log[3], log[4]  # временные данные
         return password, role, last_exit, block, fio
 
     def insert_service(self, name, code, cost):
