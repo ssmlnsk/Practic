@@ -1,7 +1,14 @@
-from PyQt5.QtGui import QFont, QPixmap
+from io import BytesIO
+
+import barcode
+from barcode import EAN13
+from barcode.writer import ImageWriter
+import img2pdf
 
 from facade import Facade
 import random
+
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtWidgets
 from PyQt5 import uic, QtCore, QtGui
 from PyQt5.QtCore import Qt, QTimer, QTime, QDateTime
@@ -49,6 +56,7 @@ class MainWindow(QMainWindow):
         self.ui.btn_new_order.clicked.connect(self.add_new_request)
         self.ui.btn_save_request.clicked.connect(self.save_request)
         self.ui.btn_plus.clicked.connect(self.add_service_to_request)
+        self.ui.btn_code.clicked.connect(self.generateCode)
 
         self.ui.btn_new_client.clicked.connect(self.oped_new_client)
 
@@ -253,6 +261,40 @@ class MainWindow(QMainWindow):
 
         self.facade.create_request(number, request[1], request[2], request[3], list_serv_for_request[1:-1])
         self.updateTableServ()
+
+    def generateCode(self):
+        rv = BytesIO()
+        EAN13 = barcode.get_barcode_class('code39')
+        EAN13(str(100000902922), writer=ImageWriter()).write(rv)
+
+        temp = str(self.spin_num_order.value()) + str(self.date_req) + str(self.time_req)
+        temp_middle = temp.replace(".", "")
+        temp_end = temp_middle.replace(":", "")
+
+        name = "code" + temp_end
+
+        with open("codes/" + name + '.png', "wb") as f:
+            EAN13(temp_end, writer=ImageWriter()).write(f)
+
+        a4_page_size = [img2pdf.in_to_pt(8.3), img2pdf.in_to_pt(11.7)]
+        layout_function = img2pdf.get_layout_fun(a4_page_size)
+
+        pdf = img2pdf.convert("codes/" + name + '.png', layout_fun=layout_function)
+        with open("codes/" + name + '.pdf', 'wb') as f:
+            f.write(pdf)
+
+        icon = QtGui.QIcon('codes/' + name + '.png')
+        item = QtWidgets.QListWidgetItem(icon, "")
+        self.add_new_field.addItem(item)
+
+        self.mes_box('Штрих-код создан.')
+
+    def mes_box(self, text):
+        self.messagebox = QMessageBox(self)
+        self.messagebox.setWindowTitle("Штрих-код")
+        self.messagebox.setText(text)
+        self.messagebox.setStandardButtons(QMessageBox.Ok)
+        self.messagebox.show()
 
     def next_page(self):
         if self.now_page != len(self.page_id)-1:

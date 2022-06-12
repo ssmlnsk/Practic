@@ -192,7 +192,7 @@
          <string notr="true">font: &quot;Comic Sans MS&quot;;</string>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page_1_for_all">
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -702,6 +702,12 @@ background-color: rgb(118, 227, 131);</string>
             </item>
             <item>
              <widget class="QListWidget" name="add_new_field">
+              <property name="iconSize">
+               <size>
+                <width>500</width>
+                <height>151</height>
+               </size>
+              </property>
               <property name="selectionRectVisible">
                <bool>true</bool>
               </property>
@@ -771,7 +777,7 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="btn_code">
                 <property name="styleSheet">
                  <string notr="true">background-color: rgb(73, 140, 81);
 font: 9pt &quot;Comic Sans MS&quot;;</string>
