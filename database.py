@@ -247,9 +247,6 @@ class Database:
             cursor = self.conn.cursor()
             cursor.execute(f"INSERT INTO history VALUES (NULL, %s, NULL, %s, %s)", (time, success, login))
             self.conn.commit()
-            cursor.execute(
-                f"UPDATE employees set `Последний вход`='{time}', `Тип входа`='{success}' WHERE `Логин`='{login}'")
-            self.conn.commit()
 
         except Error as e:
             print(e)

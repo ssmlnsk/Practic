@@ -22,7 +22,8 @@ class Facade:
 
     def get_for_authorization(self, login):
         log = self.db.get_info(login)
-        """ вернуть из бд пароль, роль сотрудника, дату последнего выхода и блокировку (true, false) по логину, если такого логина нет, тогда вернуть '', '', '', '' (4 пустых строки) """
+        if log == []:
+            return '', '', '', '', '', ''
         password, role, last_exit, block, fio, photo = log[0], log[1], log[2], log[3], log[4], log[5]  # временные данные
         return password, role, last_exit, block, fio, photo
 

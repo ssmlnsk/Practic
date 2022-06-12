@@ -389,10 +389,6 @@ class DialogAuth(QDialog):
             logging.log(logging.INFO, 'Ошибка. Заполните все поля!')
             self.mes_box('Заполните все поля!')
 
-        elif auth_log not in self.facade.get_logins():
-            logging.log(logging.INFO, 'Ошибка. Неверный логин!')
-            self.mes_box('Неверный логин!')
-
         elif self.now_captcha is not None and self.ui.edit_captcha.text() == '':    # если капча существует и она не пустая
             logging.log(logging.INFO, 'Ошибка. Введите капчу!')
             self.mes_box('Введите капчу!')
