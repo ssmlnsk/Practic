@@ -64,6 +64,21 @@ class MainWindow(QMainWindow):
 
         self.ui.btn_new_client.clicked.connect(self.oped_new_client)
 
+        self.ui.btn_count_order.clicked.connect(self.count_order)
+        self.ui.btn_count_serv.clicked.connect(self.count_serv)
+        self.ui.btn_count_order_serv.clicked.connect(self.count_order_serv)
+
+        self.type = 0
+        self.dict = {}
+        if self.ui.btn_count_order.clicked:
+            self.type = 1
+        elif self.ui.btn_count_order_serv.clicked:
+            self.type = 3
+        elif self.ui.btn_count_serv.clicked:
+            self.type = 2
+
+        self.ui.btn_pdf.clicked.connect(lambda: self.order_pdf(self.type, self.dict))
+
         self.updateTableServ()
         self.updateTableHistory()
 
@@ -115,15 +130,15 @@ class MainWindow(QMainWindow):
         """
         self.table_serv.clear()
         rec = self.facade.read_clients()
-        self.ui.table_clients.setColumnCount(7)  # кол-во столбцов
-        self.ui.table_clients.setRowCount(len(rec))  # кол-во строк
-        self.ui.table_clients.setHorizontalHeaderLabels(['ФИО', 'Код клиента', 'Паспротные данные', 'Дата рождения', 'Адрес', 'e-mail', 'password'])  # название колонок таблицы
+        self.ui.table_clients.setColumnCount(7)
+        self.ui.table_clients.setRowCount(len(rec))
+        self.ui.table_clients.setHorizontalHeaderLabels(['ФИО', 'Код клиента', 'Паспротные данные', 'Дата рождения', 'Адрес', 'e-mail', 'password'])
 
         for i, client in enumerate(rec):
-            for x, field in enumerate(client):  # i, x - координаты ячейки, в которую будем записывать текст
+            for x, field in enumerate(client):
                 item = QTableWidgetItem()
-                item.setText(str(field))  # записываем текст в ячейку
-                if x == 0:  # для id делаем некликабельные ячейки
+                item.setText(str(field))
+                if x == 0:
                     item.setFlags(Qt.ItemIsEnabled)
                 self.ui.table_clients.setItem(i, x, item)
 
@@ -134,15 +149,15 @@ class MainWindow(QMainWindow):
         """
         self.table_serv.clear()
         rec = self.facade.read_services()
-        self.ui.table_serv.setColumnCount(4)  # кол-во столбцов
-        self.ui.table_serv.setRowCount(len(rec))  # кол-во строк
-        self.ui.table_serv.setHorizontalHeaderLabels(['ID', 'Название услуги', 'Код услуги', 'Стоимость руб. за час'])  # название колонок таблицы
+        self.ui.table_serv.setColumnCount(4)
+        self.ui.table_serv.setRowCount(len(rec))
+        self.ui.table_serv.setHorizontalHeaderLabels(['ID', 'Название услуги', 'Код услуги', 'Стоимость руб. за час'])
 
         for i, service in enumerate(rec):
-            for x, field in enumerate(service):  # i, x - координаты ячейки, в которую будем записывать текст
+            for x, field in enumerate(service):
                 item = QTableWidgetItem()
-                item.setText(str(field))  # записываем текст в ячейку
-                if x == 0:  # для id делаем некликабельные ячейки
+                item.setText(str(field))
+                if x == 0:
                     item.setFlags(Qt.ItemIsEnabled)
                 self.ui.table_serv.setItem(i, x, item)
 
@@ -153,15 +168,15 @@ class MainWindow(QMainWindow):
         """
         self.table_entry.clear()
         rec = self.facade.read_history()
-        self.table_entry.setColumnCount(5)  # кол-во столбцов
-        self.table_entry.setRowCount(len(rec))  # кол-во строк
-        self.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])  # название колонок таблицы
+        self.table_entry.setColumnCount(5)
+        self.table_entry.setRowCount(len(rec))
+        self.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])
 
         for i, employee in enumerate(rec):
-            for x, info in enumerate(employee):  # i, x - координаты ячейки, в которую будем записывать текст
+            for x, info in enumerate(employee):
                 item = QTableWidgetItem()
-                item.setText(str(info))  # записываем текст в ячейку
-                if x == 0:  # для id делаем некликабельные ячейки
+                item.setText(str(info))
+                if x == 0:
                     item.setFlags(Qt.ItemIsEnabled)
                 self.ui.table_entry.setItem(i, x, item)
 
@@ -372,6 +387,209 @@ class MainWindow(QMainWindow):
         self.messagebox.setText(text)
         self.messagebox.setStandardButtons(QMessageBox.Ok)
         self.messagebox.show()
+
+    def otchot(self):
+        start = self.date_start.dateTime().toString('yyyy.MM.dd')
+        end = self.date_end.dateTime().toString('yyyy.MM.dd')
+        data = list(self.facade.get_date_serv())
+        count_serv = {}  # 1
+        count_order_serv = {}  # 2
+        count_order = {}  # 3
+
+        for i, date in enumerate(data):
+            data[i] = list(data[i])
+            d = date[1].split('.')
+            data[i][1] = d[2] + '.' + d[1] + '.' + d[0]
+            if data[i][1] >= start and data[i][1] <= end:
+                servs = date[0].split()
+                try:
+                    count_order[date[1]] += 1
+                except KeyError:
+                    count_order[date[1]] = 1
+                try:
+                    count_serv[date[1]] += len(servs)
+                except:
+                    count_serv[date[1]] = len(servs)
+                try:
+                    count_order_serv[date[1]]
+                except KeyError:
+                    count_order_serv[date[1]] = {}
+
+                for s in servs:
+                    try:
+                        count_order_serv[date[1]][s] += 1
+                    except KeyError:
+                        count_order_serv[date[1]][s] = 1
+        return [count_order, count_serv, count_order_serv]
+
+    def count_order(self):
+        self.table_graf.setRowCount(0)
+        self.table_graf.setColumnCount(0)
+        temp = self.otchot()
+        rec = temp[0]
+        self.dict = temp[0]
+        self.table_graf.setColumnCount(2)
+        self.table_graf.setRowCount(len(rec))
+        self.table_graf.setHorizontalHeaderLabels(['Дата', 'Количество заказов'])
+
+        data = []
+        count = []
+
+        for d, c in rec.items():
+            data.append(d)
+            count.append(c)
+
+        for row, value1 in enumerate(data):
+            item = QTableWidgetItem()
+            item.setText(str(value1))
+            self.table_graf.setItem(row, 0, item)
+
+        for row, value2 in enumerate(count):
+            item = QTableWidgetItem()
+            item.setText(str(value2))
+            self.table_graf.setItem(row, 1, item)
+
+    def count_serv(self):
+        self.table_graf.setRowCount(0)
+        self.table_graf.setColumnCount(0)
+        temp = self.otchot()
+        rec = temp[1]
+        self.dict = temp[1]
+        self.table_graf.setColumnCount(2)
+        self.table_graf.setRowCount(len(rec))
+        self.table_graf.setHorizontalHeaderLabels(['Дата', 'Количество услуг'])
+
+        data = []
+        count = []
+
+        for d, c in rec.items():
+            data.append(d)
+            count.append(c)
+
+        for row, value1 in enumerate(data):
+            item = QTableWidgetItem()
+            item.setText(str(value1))
+            self.table_graf.setItem(row, 0, item)
+
+        for row, value2 in enumerate(count):
+            item = QTableWidgetItem()
+            item.setText(str(value2))
+            self.table_graf.setItem(row, 1, item)
+
+    def count_order_serv(self):
+        self.table_graf.setRowCount(0)
+        self.table_graf.setColumnCount(0)
+        temp = self.otchot()
+        rec = temp[2]
+        self.dict = temp[2]
+        day = []
+        serv = []
+        count = []
+        lenght = 0
+
+        for d in rec.items():
+            for i in d:
+                if i == d[1]:
+                    temp = []
+                    temp2 = []
+                    for j in i:
+                        temp.append(j)
+                    serv.append(temp)
+                    for k in i:
+                        temp2.append(i[k])
+                    count.append(temp2)
+                else:
+                    day.append(i)
+
+        for i in serv:
+            lenght += len(i)
+
+        x = 0
+        x2 = 0
+
+        self.table_graf.setRowCount(lenght)
+        self.table_graf.setColumnCount(3)
+        self.table_graf.setHorizontalHeaderLabels(['Дата', 'Услуги', 'Количество услуг'])
+
+        for row, value1 in enumerate(day):
+            temp_serv = serv[row]
+            temp_count = count[row]
+            len_serv = len(temp_serv)
+            self.table_graf.setSpan(x, 0, len_serv, 1)
+            item = QTableWidgetItem(str(value1))
+            self.table_graf.setItem(x, 0, item)
+            for i in temp_serv:
+                item_serv = QTableWidgetItem(i)
+                self.table_graf.setItem(x, 1, item_serv)
+                x += 1
+            for j in temp_count:
+                item_count = QTableWidgetItem(str(j))
+                self.table_graf.setItem(x2, 2, item_count)
+                x2 += 1
+
+    def order_pdf(self, type, data):
+        from fpdf import FPDF
+        x, y = 10, 60
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.add_font('Calibri Regular', '', 'C:\Windows\Fonts\calibri.ttf', uni=True)
+        pdf.set_font('Calibri Regular', size=25)
+        pdf.image('img/logo.png', w=30, h=30)
+
+        if type == 1:
+            pdf.cell(200, -30, txt="Отчёт по кол-ву оказанных услуг по дням", ln=1, align="C")
+            pdf.set_font('Calibri Regular', size=14)
+            pdf.text(x, y, 'Дата')
+            pdf.text(x + 60, y, 'Кол-во оказанных услуг')
+            for d in data:
+                y += 10
+                if y == 300:
+                    y, x = 10, 10
+                    pdf.add_page()
+                    pdf.text(x, y, 'Дата')
+                    pdf.text(x + 60, y, 'Кол-во оказанных услуг')
+                    y += 10
+                pdf.text(x, y, d)
+                pdf.text(x + 60, y, str(data[d]))
+            pdf.output("report_serv.pdf")
+
+        elif type == 2:
+            pdf.cell(200, -30, txt="Отчёт по кол-ву заказов по каждой услуге", ln=1, align="C")
+            pdf.set_font('Calibri Regular', size=14)
+            pdf.text(x, y, 'Дата')
+            pdf.text(x + 60, y, 'Номер услуги')
+            pdf.text(x + 120, y, 'Кол-во оказанных услуг')
+            for d in data:
+                pdf.text(x, y + 10, d)
+                for serv in data[d]:
+                    y += 10
+                    if y == 300:
+                        y, x = 10, 10
+                        pdf.add_page()
+                        pdf.text(x, y, 'Дата')
+                        pdf.text(x + 60, y, 'Номер услуги')
+                        pdf.text(x + 120, y, 'Кол-во оказанных услуг')
+                        y += 10
+                    pdf.text(x + 63, y, str(y))
+                    pdf.text(x + 123, y, str(data[d][serv]))
+            pdf.output("report_order_serv.pdf")
+
+        elif type == 3:
+            pdf.cell(200, -30, txt="Отчёт по кол-ву заказов по дням", ln=1, align="C")
+            pdf.set_font('Calibri Regular', size=14)
+            pdf.text(x, y, 'Дата')
+            pdf.text(x + 60, y, 'Кол-во заказов')
+            for d in data:
+                y += 10
+                if y == 300:
+                    y, x = 10, 10
+                    pdf.add_page()
+                    pdf.text(x, y, 'Дата')
+                    pdf.text(x + 60, y, 'Кол-во заказов')
+                    y += 10
+                pdf.text(x, y, d)
+                pdf.text(x + 60, y, str(data[d]))
+            pdf.output("report_order.pdf")
 
     def next_page(self):
         """

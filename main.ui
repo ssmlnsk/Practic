@@ -532,17 +532,8 @@
             <property name="cornerButtonEnabled">
              <bool>true</bool>
             </property>
-            <attribute name="horizontalHeaderVisible">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="horizontalHeaderCascadingSectionResizes">
-             <bool>false</bool>
-            </attribute>
             <attribute name="horizontalHeaderDefaultSectionSize">
              <number>100</number>
-            </attribute>
-            <attribute name="horizontalHeaderHighlightSections">
-             <bool>true</bool>
             </attribute>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
@@ -1040,29 +1031,7 @@ font: 9pt &quot;Comic Sans MS&quot;;</string>
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="1,1,1">
-            <item>
-             <widget class="QPushButton" name="btn_table">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(73, 140, 81);
-font: 9pt &quot;Comic Sans MS&quot;;</string>
-              </property>
-              <property name="text">
-               <string>таблица</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btn_graf">
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(73, 140, 81);
-font: 9pt &quot;Comic Sans MS&quot;;</string>
-              </property>
-              <property name="text">
-               <string>график</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="1">
             <item>
              <widget class="QPushButton" name="btn_pdf">
               <property name="styleSheet">

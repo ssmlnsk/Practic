@@ -410,3 +410,19 @@ class Database:
         finally:
             self.conn.close()
             cursor.close()
+
+    def get_date_serv(self):
+        try:
+            self.conn = mysql.connector.connect(host='localhost', port=3306, user='root', database='igora')
+            cursor = self.conn.cursor()
+            cursor.execute(f"SELECT `Услуги`, `Дата создания` FROM requests")
+            rows = cursor.fetchall()
+
+            return rows
+
+        except Error as e:
+            print(e)
+
+        finally:
+            self.conn.close()
+            cursor.close()
