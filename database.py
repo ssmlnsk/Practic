@@ -115,8 +115,9 @@ class Database:
             print(e)
 
         finally:
-            self.conn.close()
-            cursor.close()
+            pass
+            # self.conn.close()
+            # cursor.close()
 
     def get_info(self, login):
         log = []

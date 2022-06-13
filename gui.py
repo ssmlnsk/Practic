@@ -1,9 +1,16 @@
-from PyQt5.QtGui import QFont
+from io import BytesIO
+
+import barcode
+from barcode import EAN13
+from barcode.writer import ImageWriter
+import img2pdf
 
 from facade import Facade
 import random
+
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5 import QtWidgets
-from PyQt5 import uic, QtCore
+from PyQt5 import uic, QtCore, QtGui
 from PyQt5.QtCore import Qt, QTimer, QTime, QDateTime
 from PyQt5.QtWidgets import QGraphicsScene, QListWidgetItem
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog
@@ -49,6 +56,7 @@ class MainWindow(QMainWindow):
         self.ui.btn_new_order.clicked.connect(self.add_new_request)
         self.ui.btn_save_request.clicked.connect(self.save_request)
         self.ui.btn_plus.clicked.connect(self.add_service_to_request)
+        self.ui.btn_code.clicked.connect(self.generateCode)
 
         self.ui.btn_new_client.clicked.connect(self.oped_new_client)
 
@@ -114,9 +122,9 @@ class MainWindow(QMainWindow):
     def updateTableHistory(self):
         self.table_entry.clear()
         rec = self.facade.read_history()
-        self.ui.table_entry.setColumnCount(5)  # кол-во столбцов
-        self.ui.table_entry.setRowCount(len(rec))  # кол-во строк
-        self.ui.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])  # название колонок таблицы
+        self.table_entry.setColumnCount(5)  # кол-во столбцов
+        self.table_entry.setRowCount(len(rec))  # кол-во строк
+        self.table_entry.setHorizontalHeaderLabels(['ID', 'Дата входа', 'Дата выхода', 'Блокировка', 'Логин сотрудника'])  # название колонок таблицы
 
         for i, employee in enumerate(rec):
             for x, info in enumerate(employee):  # i, x - координаты ячейки, в которую будем записывать текст
@@ -203,18 +211,18 @@ class MainWindow(QMainWindow):
         self.service = QListWidgetItem(self.comboBox_serv.currentText())
         self.service_title = QListWidgetItem("Услуга:")
         self.datetime = datetime.datetime.now()
-        self.date_title = QListWidgetItem("Дата создания:")
-        self.date = str(self.datetime.strftime("%d.%m.%Y"))
-        self.time_title = QListWidgetItem("Время заказа:")
-        self.time = str(self.datetime.strftime("%H:%M"))
+        self.date_req_title = QListWidgetItem("Дата создания:")
+        self.date_req = str(self.datetime.strftime("%d.%m.%Y"))
+        self.time_req_title = QListWidgetItem("Время заказа:")
+        self.time_req = str(self.datetime.strftime("%H:%M"))
         self.add_new_field.clear()
         if self.number != '' and self.client != '' and self.service != '':
             self.add_new_field.addItem(self.number_title)
             self.add_new_field.addItem(self.number)
-            self.add_new_field.addItem(self.date_title)
-            self.add_new_field.addItem(self.date)
-            self.add_new_field.addItem(self.time_title)
-            self.add_new_field.addItem(self.time)
+            self.add_new_field.addItem(self.date_req_title)
+            self.add_new_field.addItem(self.date_req)
+            self.add_new_field.addItem(self.time_req_title)
+            self.add_new_field.addItem(self.time_req)
             self.add_new_field.addItem(self.client_title)
             self.add_new_field.addItem(self.client)
             self.add_new_field.addItem(self.service_title)
@@ -253,6 +261,40 @@ class MainWindow(QMainWindow):
 
         self.facade.create_request(number, request[1], request[2], request[3], list_serv_for_request[1:-1])
         self.updateTableServ()
+
+    def generateCode(self):
+        rv = BytesIO()
+        EAN13 = barcode.get_barcode_class('code39')
+        EAN13(str(100000902922), writer=ImageWriter()).write(rv)
+
+        temp = str(self.spin_num_order.value()) + str(self.date_req) + str(self.time_req)
+        temp_middle = temp.replace(".", "")
+        temp_end = temp_middle.replace(":", "")
+
+        name = "code" + temp_end
+
+        with open("codes/" + name + '.png', "wb") as f:
+            EAN13(temp_end, writer=ImageWriter(), add_checksum=False).write(f)
+
+        a4_page_size = [img2pdf.in_to_pt(8.3), img2pdf.in_to_pt(11.7)]
+        layout_function = img2pdf.get_layout_fun(a4_page_size)
+
+        pdf = img2pdf.convert("codes/" + name + '.png', layout_fun=layout_function)
+        with open("codes/" + name + '.pdf', 'wb') as f:
+            f.write(pdf)
+
+        icon = QtGui.QIcon('codes/' + name + '.png')
+        item = QtWidgets.QListWidgetItem(icon, "")
+        self.add_new_field.addItem(item)
+
+        self.mes_box('Штрих-код создан.')
+
+    def mes_box(self, text):
+        self.messagebox = QMessageBox(self)
+        self.messagebox.setWindowTitle("Штрих-код")
+        self.messagebox.setText(text)
+        self.messagebox.setStandardButtons(QMessageBox.Ok)
+        self.messagebox.show()
 
     def next_page(self):
         if self.now_page != len(self.page_id)-1:
@@ -347,15 +389,12 @@ class DialogAuth(QDialog):
             logging.log(logging.INFO, 'Ошибка. Заполните все поля!')
             self.mes_box('Заполните все поля!')
 
-        elif auth_log not in self.facade.get_logins():
-            logging.log(logging.INFO, 'Ошибка. Неверный логин!')
-            self.mes_box('Неверный логин!')
-
         elif self.now_captcha is not None and self.ui.edit_captcha.text() == '':    # если капча существует и она не пустая
             logging.log(logging.INFO, 'Ошибка. Введите капчу!')
             self.mes_box('Введите капчу!')
         else:
-            password, role, last_exit, block, fio = self.parent().facade.get_for_authorization(auth_log)
+            password, role, last_exit, block, fio, photo = self.parent().facade.get_for_authorization(auth_log)
+            pix = QPixmap(f'img/Ширяев.jpeg')
             if last_exit is not None and block:     # после окончания предыдущей сессии, новую можно начать только через 3 минуты
                 last_exit = last_exit.split()
                 day, mon, year = map(int, last_exit[0].split(':'))
@@ -404,6 +443,7 @@ class DialogAuth(QDialog):
                     self.parent().hide()
                     self.parent().page_id = [0, 1, 4, 5]
                 self.parent().show()
+                self.parent().ui.lbl_photo.setPixmap(pix)
                 self.parent().timer.start(1000)
                 self.parent().now_login = auth_log
                 self.close()
