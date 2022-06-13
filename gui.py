@@ -28,6 +28,10 @@ logging.basicConfig(level=logging.INFO)
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        """
+        Отвечает за подключением к кнопкам, объявление переменных, заполнение таблиц,
+        получение списка страниц StackedWidget
+        """
         super().__init__()
         self.facade = Facade()
         self.ui = uic.loadUi("main.ui", self)
@@ -64,6 +68,10 @@ class MainWindow(QMainWindow):
         self.updateTableHistory()
 
     def Counter(self):
+        """
+        ???
+        :return:
+        """
         self.time = self.time.addSecs(-1)
         self.lcdTimer.display(self.time.toString("hh:mm:ss"))
         if self.time == QTime(0, 2, 0):
@@ -78,6 +86,11 @@ class MainWindow(QMainWindow):
             self.timer.stop()
 
     def exit(self, block):
+        """
+        Отвечает за выход из программы
+        :param block: блокировка
+        :return:
+        """
         self.now_page = 0
         self.page.setCurrentIndex(self.page_id[self.now_page])
         t = time.localtime()
@@ -87,10 +100,20 @@ class MainWindow(QMainWindow):
         self.open_auth()
 
     def page_all_clients(self):
+        """
+        Отвечает за переход к странице с таблицей клиентов
+        Обновление таблицы клиентов
+        :return:
+        """
         self.toTable()
         self.page.setCurrentIndex(3)
 
     def toTable(self):
+        """
+        Отвечает за обновление таблицы клиентов
+        :return:
+        """
+        self.table_serv.clear()
         rec = self.facade.read_clients()
         self.ui.table_clients.setColumnCount(7)  # кол-во столбцов
         self.ui.table_clients.setRowCount(len(rec))  # кол-во строк
@@ -105,6 +128,10 @@ class MainWindow(QMainWindow):
                 self.ui.table_clients.setItem(i, x, item)
 
     def updateTableServ(self):
+        """
+        Отвечает за обновление таблицы услуг
+        :return:
+        """
         self.table_serv.clear()
         rec = self.facade.read_services()
         self.ui.table_serv.setColumnCount(4)  # кол-во столбцов
@@ -120,6 +147,10 @@ class MainWindow(QMainWindow):
                 self.ui.table_serv.setItem(i, x, item)
 
     def updateTableHistory(self):
+        """
+        Отвечает за обновление таблицы истории входа
+        :return:
+        """
         self.table_entry.clear()
         rec = self.facade.read_history()
         self.table_entry.setColumnCount(5)  # кол-во столбцов
@@ -135,6 +166,10 @@ class MainWindow(QMainWindow):
                 self.ui.table_entry.setItem(i, x, item)
 
     def new_service(self):
+        """
+        Отвечает за добавление новой услуги
+        :return:
+        """
         title_serv = self.ui.edit_title_serv.text()
         code_serv = self.ui.edit_code_serv.text()
         cost_serv = self.ui.spin_cost.value()
@@ -143,6 +178,10 @@ class MainWindow(QMainWindow):
             self.updateTableServ()
 
     def delete_service(self):
+        """
+        Отвечает за удаление выбранной услуги
+        :return:
+        """
         SelectedRow = self.table_serv.currentRow()
         rowcount = self.table_serv.rowCount()
         colcount = self.table_serv.columnCount()
@@ -169,9 +208,13 @@ class MainWindow(QMainWindow):
             ix = self.table_serv.model().index(-1, -1)
             self.table_serv.setCurrentIndex(ix)
 
-    def get_from_table(self):  # получаем данные из таблицы, чтобы потом записать их в БД
-        rows = self.table_serv.rowCount()  # получаем кол-во строк таблицы
-        cols = self.table_serv.columnCount()  # получаем кол-во столбцов таблицы
+    def get_from_table(self):
+        """
+        Получение данных из таблицы, чтобы потом записать их в БД
+        :return: data
+        """
+        rows = self.table_serv.rowCount()
+        cols = self.table_serv.columnCount()
         data = []
         for row in range(rows):
             tmp = []
@@ -181,6 +224,11 @@ class MainWindow(QMainWindow):
         return data
 
     def save_service(self):
+        """
+        Отвечает за сохранение данных об услугах в базу данных
+        Обновление таблицы в интерфейсе
+        :return:
+        """
         data = self.get_from_table()
         for string in data:
             if string[1] != '':  # если название услуги есть, то обновляем данные
@@ -190,6 +238,10 @@ class MainWindow(QMainWindow):
         self.updateTableServ()
 
     def build_combobox_clients(self):
+        """
+        Добавление списка клиентов в ComboBox
+        :return:
+        """
         clients = self.facade.get_clients()
         self.comboBox_clients.clear()
         if self.comboBox_clients is not None:
@@ -197,6 +249,10 @@ class MainWindow(QMainWindow):
         logging.log(logging.INFO, 'ComboBox "Клиенты" обновлён')
 
     def build_combobox_services(self):
+        """
+        Добавление списка услуг в ComboBox
+        :return:
+        """
         services = self.facade.get_services()
         self.comboBox_serv.clear()
         if self.comboBox_serv is not None:
@@ -204,9 +260,14 @@ class MainWindow(QMainWindow):
         logging.log(logging.INFO, 'ComboBox "Услуги" обновлён')
 
     def add_new_request(self):
+        """
+        Оформление нового заказа и его показ в ListWidget
+        :return:
+        """
         self.number = QListWidgetItem(str(self.spin_num_order.value()))
         self.number_title = QListWidgetItem("Номер заказа:")
         self.client = QListWidgetItem(self.comboBox_clients.currentText())
+        self.client_code = QListWidgetItem(self.facade.get_code_client(self.comboBox_clients.currentText()))
         self.client_title = QListWidgetItem("Клиент:")
         self.service = QListWidgetItem(self.comboBox_serv.currentText())
         self.service_title = QListWidgetItem("Услуга:")
@@ -224,15 +285,24 @@ class MainWindow(QMainWindow):
             self.add_new_field.addItem(self.time_req_title)
             self.add_new_field.addItem(self.time_req)
             self.add_new_field.addItem(self.client_title)
+            self.add_new_field.addItem(self.client_code)
             self.add_new_field.addItem(self.client)
             self.add_new_field.addItem(self.service_title)
             self.add_new_field.addItem(self.service)
 
     def add_service_to_request(self):
+        """
+        Добавление услуги в заказ
+        :return:
+        """
         self.service = QListWidgetItem(self.comboBox_serv.currentText())
         self.add_new_field.addItem(self.service)
 
     def save_request(self):
+        """
+        Отвечает за сохранение заказа в базу данных
+        :return:
+        """
         ignore_serv = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         ignore2 = [1, 3, 5, 7]
         count = self.add_new_field.count()
@@ -246,8 +316,6 @@ class MainWindow(QMainWindow):
             serv.append(id_serv)
             list_serv_for_request = str(serv).replace("'", "")
 
-        print(list_serv_for_request)
-
         for j in list_req:
             if j == 7:
                 fio = str(self.add_new_field.item(j).text())
@@ -256,13 +324,17 @@ class MainWindow(QMainWindow):
             else:
                 request.append(self.add_new_field.item(j).text())
 
-        print(request)
         number = str(request[0] + "/" + request[1])
 
         self.facade.create_request(number, request[1], request[2], request[3], list_serv_for_request[1:-1])
         self.updateTableServ()
 
     def generateCode(self):
+        """
+        Отвечает за создание штрих-кода по номеру, дате и времени заказа
+        Создаётся в форматах .png и .pdf
+        :return:
+        """
         rv = BytesIO()
         EAN13 = barcode.get_barcode_class('code39')
         EAN13(str(100000902922), writer=ImageWriter()).write(rv)
@@ -290,6 +362,11 @@ class MainWindow(QMainWindow):
         self.mes_box('Штрих-код создан.')
 
     def mes_box(self, text):
+        """
+        Открывает messagebox с переданным текстом.
+        Вызывается при успешном создании кода.
+        :param text: текст для вывода в messagebox
+        """
         self.messagebox = QMessageBox(self)
         self.messagebox.setWindowTitle("Штрих-код")
         self.messagebox.setText(text)
@@ -297,22 +374,39 @@ class MainWindow(QMainWindow):
         self.messagebox.show()
 
     def next_page(self):
+        """
+        Отвечает за переход к следующей странице
+        :return:
+        """
         if self.now_page != len(self.page_id)-1:
             self.now_page += 1
             self.page.setCurrentIndex(self.page_id[self.now_page])
 
     def back_page(self):
+        """
+        Отвечает за переход к предыдущей странице
+        :return:
+        """
         if self.now_page != 0:
             self.now_page -= 1
             self.page.setCurrentIndex(self.page_id[self.now_page])
 
     def open_auth(self):
+        """
+        Создает и показывает диалоговое окно авторизации.
+        Вызывается в __init__ и в функции exit
+        :return:
+        """
         dialog = DialogAuth(self)
         dialog.setWindowTitle("Авторизация")
         dialog.show()
         dialog.exec_()
 
     def oped_new_client(self):
+        """
+        Создает и показывает диалоговое окно создания нового клиента.
+        :return:
+        """
         dialog_client = DialogNewClient(self)
         dialog_client.setWindowTitle("Добавление нового клиента")
         dialog_client.show()
@@ -321,6 +415,9 @@ class MainWindow(QMainWindow):
 
 class DialogAuth(QDialog):
     def __init__(self, parent=None):
+        """
+        Отвечает за подключением к кнопкам, объявление переменных, создание сцены для «graphicsView»
+        """
         super(DialogAuth, self).__init__(parent)
         self.ui = uic.loadUi("auth.ui", self)
         self.facade = Facade()
@@ -338,6 +435,10 @@ class DialogAuth(QDialog):
         self.vis_p = False
 
     def vis_pas(self):
+        """
+        Вызывается при нажатии на кнопку «btn_hide_password».
+        Скрывает и показывает пароль (в соответствии с переменной self.vis_p)
+        """
         ed = self.ui.edit_password
         if self.vis_p:
             self.vis_p = False
@@ -347,12 +448,23 @@ class DialogAuth(QDialog):
             ed.setEchoMode(QtWidgets.QLineEdit.Normal)
 
     def visible_captcha(self, visible=True):
+        """
+        Вызывается в __init__ (с параметром False) и при второй неуспешной попытки входа
+        (неправильный ввод пароля или логина) с параметом True.
+        :param visible:
+        При False скрывает поле ввода, кнопку обновления и сцену для отрисовки капчи
+        При True - показывает поле ввода, кнопку обновления и сцену для отрисовки капчи
+        """
         self.ui.draw_captcha.setVisible(visible)
         self.ui.edit_captcha.setVisible(visible)
         self.ui.label_4.setVisible(visible)
         self.ui.btn_new_captcha.setVisible(visible)
 
     def captcha_generation(self):
+        """
+        Вызывается при второй неуспешной попытке входа и при нажатии на кнопку «btn_new_captcha».
+        Выводит капчу в «graphicsView» и возвращает значение капчи в переменной self.now_captcha
+        """
         self.scene.clear()
         syms = 'qwertyuiopasdfghjklzxcvbnm1234567890'
         count_syms = 3
@@ -370,6 +482,11 @@ class DialogAuth(QDialog):
         self.now_captcha = ''.join(now_syms)
 
     def mes_box(self, text):
+        """
+        Открывает messagebox с переданным текстом.
+        Вызывается при неверном вводе пользователем логина, пароля, капчи.
+        :param text: текст для вывода в messagebox
+        """
         self.messagebox = QMessageBox(self)
         self.messagebox.setWindowTitle("Ошибка")
         self.messagebox.setText(text)
@@ -378,7 +495,12 @@ class DialogAuth(QDialog):
 
     def enter(self):
         """
-        при нажатии на кнопку вход
+        Вызывается при нажатии на кнопку btn_enter.
+        Обрабатывает все случаи ввода данных (капчи, логина, пароля) и считает неуспешные попытки входа.
+        Проверяет есть ли у пользователя блокировка и до скольки она длиться.
+        При успешном входе передает в фасад время и логин успешного входа (для записи в бд),
+        записывает индексы доступных страничек «Stacked Widget»
+        (у разных сотрудников могут быть разные странички)
         """
         t = time.localtime()
         now_time = time.mktime(t)  # переводим в секунды
@@ -451,6 +573,9 @@ class DialogAuth(QDialog):
 
 class DialogNewClient(QDialog):
     def __init__(self, parent=None):
+        """
+        Отвечает за подключением к кнопке "Добавить"
+        """
         super(DialogNewClient, self).__init__(parent)
         self.ui = uic.loadUi("new_client.ui", self)
         self.facade = Facade()
@@ -458,6 +583,10 @@ class DialogNewClient(QDialog):
         self.ui.btn_add_client.clicked.connect(self.add)
 
     def add(self):
+        """
+        Отвечает за добавление клиента в базу данных
+        :return:
+        """
         self.email = self.ui.edit_email.text()
         self.fio = self.ui.edit_fio.text()
         self.address = self.ui.edit_address.text()
@@ -470,6 +599,11 @@ class DialogNewClient(QDialog):
             self.mes_box('Заполните все поля!')
 
     def mes_box(self, text):
+        """
+        Открывает messagebox с переданным текстом.
+        Вызывается, если какое-либо поле не заполнено.
+        :param text: текст для вывода в messagebox
+        """
         self.messagebox = QMessageBox(self)
         self.messagebox.setWindowTitle("Ошибка")
         self.messagebox.setText(text)
@@ -478,6 +612,10 @@ class DialogNewClient(QDialog):
 
 
 class Builder:
+    """
+    Паттерн строитель.
+    Это порождающий паттерн проектирования, который позволяет создавать сложные объекты пошагово.
+    """
     def __init__(self):
         self.qapp = QApplication(sys.argv)
         self.window = MainWindow()

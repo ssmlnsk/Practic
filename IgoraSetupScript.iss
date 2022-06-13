@@ -9,16 +9,18 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{075EAEA3-62C9-45DF-A408-B030338966A1}
+AppId={{D5A3DB95-3EC7-47D8-8BB3-6C1C9E7FE58C}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 DefaultDirName={autopf}\{#MyAppName}
-DisableProgramGroupPage=yes
+DefaultGroupName={#MyAppName}
+AllowNoIcons=yes
 InfoBeforeFile=C:\Users\Даша\PycharmProjects\Practic\Igora.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
+OutputDir=C:\Users\Даша\PycharmProjects\Practic\Installer
 OutputBaseFilename=IgoraSetup
 SetupIconFile=C:\Users\Даша\PycharmProjects\Practic\img\logo.ico
 Compression=lzma
@@ -42,7 +44,7 @@ Source: "C:\Users\Даша\PycharmProjects\Practic\dist\codes\*"; DestDir: "{app}\co
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
