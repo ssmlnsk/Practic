@@ -9,7 +9,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{D5A3DB95-3EC7-47D8-8BB3-6C1C9E7FE58C}
+AppId={{593E8104-0AE4-4331-9D2D-17306DDAE459}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -17,12 +17,12 @@ AppPublisher={#MyAppPublisher}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-InfoBeforeFile=C:\Users\Даша\PycharmProjects\Practic\Igora.rtf
+InfoBeforeFile=C:\Users\ssmlnsk\PycharmProjects\Practic\Igora.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\Даша\PycharmProjects\Practic\Installer
+OutputDir=C:\Users\ssmlnsk\PycharmProjects\Practic\Installer
 OutputBaseFilename=IgoraSetup
-SetupIconFile=C:\Users\Даша\PycharmProjects\Practic\img\logo.ico
+SetupIconFile=C:\Users\ssmlnsk\PycharmProjects\Practic\img\logo.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -35,12 +35,13 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\Даша\PycharmProjects\Practic\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Даша\PycharmProjects\Practic\dist\auth.ui"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Даша\PycharmProjects\Practic\dist\main.ui"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Даша\PycharmProjects\Practic\dist\new_client.ui"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\Даша\PycharmProjects\Practic\dist\img\*"; DestDir: "{app}\img"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Даша\PycharmProjects\Practic\dist\codes\*"; DestDir: "{app}\codes"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\igora.spec"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\dist\auth.ui"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\dist\main.ui"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\dist\new_client.ui"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\dist\img\*"; DestDir: "{app}\img"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\ssmlnsk\PycharmProjects\Practic\dist\codes\*"; DestDir: "{app}\codes"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

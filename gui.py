@@ -84,7 +84,7 @@ class MainWindow(QMainWindow):
 
     def Counter(self):
         """
-        ???
+        Функция таймера
         :return:
         """
         self.time = self.time.addSecs(-1)
@@ -389,6 +389,10 @@ class MainWindow(QMainWindow):
         self.messagebox.show()
 
     def otchot(self):
+        """
+        Выборка данных для создания отчётов
+        :return: [count_order, count_serv, count_order_serv]
+        """
         start = self.date_start.dateTime().toString('yyyy.MM.dd')
         end = self.date_end.dateTime().toString('yyyy.MM.dd')
         data = list(self.facade.get_date_serv())
@@ -423,6 +427,10 @@ class MainWindow(QMainWindow):
         return [count_order, count_serv, count_order_serv]
 
     def count_order(self):
+        """
+        Функция создания отчёта "Количество заказов по дням за период времени"
+        :return:
+        """
         self.table_graf.setRowCount(0)
         self.table_graf.setColumnCount(0)
         temp = self.otchot()
@@ -450,6 +458,10 @@ class MainWindow(QMainWindow):
             self.table_graf.setItem(row, 1, item)
 
     def count_serv(self):
+        """
+        Функция создания отчёта "Количество оказанных услуг по дням за период времени"
+        :return:
+        """
         self.table_graf.setRowCount(0)
         self.table_graf.setColumnCount(0)
         temp = self.otchot()
@@ -477,6 +489,10 @@ class MainWindow(QMainWindow):
             self.table_graf.setItem(row, 1, item)
 
     def count_order_serv(self):
+        """
+        Функция создания отчёта "Количество заказов по дням за период времени по каждой услуге"
+        :return:
+        """
         self.table_graf.setRowCount(0)
         self.table_graf.setColumnCount(0)
         temp = self.otchot()
@@ -528,6 +544,12 @@ class MainWindow(QMainWindow):
                 x2 += 1
 
     def order_pdf(self, type, data):
+        """
+        Создание отчёта в формате pdf
+        :param type: вид отчёта
+        :param data: данные
+        :return:
+        """
         from fpdf import FPDF
         x, y = 10, 60
         pdf = FPDF()
