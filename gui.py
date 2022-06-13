@@ -345,6 +345,11 @@ class MainWindow(QMainWindow):
             self.page.setCurrentIndex(self.page_id[self.now_page])
 
     def open_auth(self):
+        """
+        создает и показывает диалоговое окно авторизации.
+        Вызывается в __init__ и в функции exit
+        :return:
+        """
         dialog = DialogAuth(self)
         dialog.setWindowTitle("Авторизация")
         dialog.show()
@@ -359,6 +364,9 @@ class MainWindow(QMainWindow):
 
 class DialogAuth(QDialog):
     def __init__(self, parent=None):
+        """
+        отвечает за подключением к кнопкам, объявление переменных, создание сцены для «graphicsView»
+        """
         super(DialogAuth, self).__init__(parent)
         self.ui = uic.loadUi("auth.ui", self)
         self.facade = Facade()
@@ -376,6 +384,10 @@ class DialogAuth(QDialog):
         self.vis_p = False
 
     def vis_pas(self):
+        """
+        вызывается при нажатии на кнопку «btn_hide_password».
+        Скрывает и показывает пароль (в соответствии с переменной self.vis_p)
+        """
         ed = self.ui.edit_password
         if self.vis_p:
             self.vis_p = False
@@ -385,12 +397,23 @@ class DialogAuth(QDialog):
             ed.setEchoMode(QtWidgets.QLineEdit.Normal)
 
     def visible_captcha(self, visible=True):
+        """
+        вызывается в __init__ (с параметром False) и при второй неуспешной попытки входа
+        (неправильный ввод пароля или логина) с параметом True.
+        :param visible:
+        при False скрывает поле ввода, кнопку обновления и сцену для отрисовки капчи
+        при True - показывает поле ввода, кнопку обновления и сцену для отрисовки капчи
+        """
         self.ui.draw_captcha.setVisible(visible)
         self.ui.edit_captcha.setVisible(visible)
         self.ui.label_4.setVisible(visible)
         self.ui.btn_new_captcha.setVisible(visible)
 
     def captcha_generation(self):
+        """
+        вызывается при второй неуспешной попытке входа и при нажатии на кнопку «btn_new_captcha».
+        Выводит капчу в «graphicsView» и возвращает значение капчи в переменной self.now_captcha
+        """
         self.scene.clear()
         syms = 'qwertyuiopasdfghjklzxcvbnm1234567890'
         count_syms = 3
@@ -408,6 +431,11 @@ class DialogAuth(QDialog):
         self.now_captcha = ''.join(now_syms)
 
     def mes_box(self, text):
+        """
+        Открывает massagebox с переданным текстом.
+        Вызывается при неверном вводе пользователем логина, пароля, капчи.
+        :param text: текст для вывода в messagebox
+        """
         self.messagebox = QMessageBox(self)
         self.messagebox.setWindowTitle("Ошибка")
         self.messagebox.setText(text)
@@ -416,7 +444,12 @@ class DialogAuth(QDialog):
 
     def enter(self):
         """
-        при нажатии на кнопку вход
+        вызывается при нажатии на кнопку btn_enter.
+        Обрабатывает все случаи ввода данных (капчи, логина, пароля) и считает неуспешные попытки входа.
+        Проверяет есть ли у пользователя блокировка и до скольки она длиться.
+        При успешном входе передает в фасад время и логин успешного входа (для записи в бд),
+        записывает индексы доступных страничек «Stacked Widget»
+        (у разных сотрудников могут быть разные странички)
         """
         t = time.localtime()
         now_time = time.mktime(t)  # переводим в секунды
