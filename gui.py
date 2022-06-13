@@ -56,12 +56,50 @@ class MainWindow(QMainWindow):
         self.ui.btn_new_order.clicked.connect(self.add_new_request)
         self.ui.btn_save_request.clicked.connect(self.save_request)
         self.ui.btn_plus.clicked.connect(self.add_service_to_request)
-        self.ui.btn_code.clicked.connect(self.generateCode)
+        # self.ui.btn_code.clicked.connect(self.generateCode)
 
         self.ui.btn_new_client.clicked.connect(self.oped_new_client)
 
         self.updateTableServ()
         self.updateTableHistory()
+        self.for_Danya()
+
+    def for_Danya(self):
+        start = '2022.03.31'
+        end = '2022.04.06'
+        data = list(self.facade.get_date_serv())
+        count_serv = {}     # 1
+        count_order_serv = {}  # 2
+        count_order = {}    # 3
+
+        for i, date in enumerate(data):
+            data[i] = list(data[i])
+            d = date[1].split('.')
+            data[i][1]= d[2]+'.'+ d[1]+'.'+d[0]
+            if data[i][1] >= start and data[i][1]<=end:
+                servs = date[0].split()
+                try:
+                    count_order[date[1]] += 1
+                except KeyError:
+                    count_order[date[1]] = 1
+                try:
+                    count_serv[date[1]] += len(servs)
+                except:
+                    count_serv[date[1]] = len(servs)
+                try:
+                    count_order_serv[date[1]]
+                except KeyError:
+                    count_order_serv[date[1]] = {}
+
+                for s in servs:
+                    try:
+                        count_order_serv[date[1]][s] += 1
+                    except KeyError:
+                        count_order_serv[date[1]][s] = 1
+
+        print(count_order)  # 1
+        print(count_serv)   # 3
+        print(count_order_serv) # 2
 
     def Counter(self):
         self.time = self.time.addSecs(-1)

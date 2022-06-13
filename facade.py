@@ -57,3 +57,6 @@ class Facade:
     def insert_time_exit(self, login, time, block):
         """вставить данные time - время выхода, block - нужен ли блок (true, false) в таблицу истории входа по логину) """
         self.db.insert_time_exit(login, time, block)
+
+    def get_date_serv(self):
+        return self.db.get_date_serv()
