@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS Services (
+id_service VARCHAR(255) NOT NULL PRIMARY KEY,
+name_service VARCHAR(255) NOT NULL,
+code_service VARCHAR(255) NOT NULL,
+price_for_hour VARCHAR(255) NOT NULL
+);
